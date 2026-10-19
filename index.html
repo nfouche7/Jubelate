@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="af">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AGS Jubelate</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jubelate">
+<meta name="theme-color" content="#a42f29">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column like a church bulletin; fixed bottom tabs. Tokens shared with Logos. */
+:root{
+  --bg:#eef0eb; --surface:#fafaf6; --ink:#1c2333; --muted:#596170; --line:#d6d9cf;
+  --accent:#2d5c4f; --accent-soft:#dce8e2; --gold:#9a6d22; --gold-soft:#f2e7d2;
+  --study:#2d5c4f; --sermon:#7a4a1f; --news:#3b5579; --danger:#a23b2c; --danger-soft:#f6e1dc;
+  --f-display:"Cinzel",Georgia,serif; --f-body:"Literata",Georgia,serif; --f-ui:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11151c; --surface:#181e27; --ink:#e7e3d8; --muted:#9ba2ae; --line:#2b323d;
+  --accent:#86b9a6; --accent-soft:#1f3530; --gold:#d8ad5f; --gold-soft:#3a2f1c;
+  --study:#86b9a6; --sermon:#d9a066; --news:#8fb0d9; --danger:#e08a7a; --danger-soft:#3a1f1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151c; --surface:#181e27; --ink:#e7e3d8; --muted:#9ba2ae; --line:#2b323d;
+  --accent:#86b9a6; --accent-soft:#1f3530; --gold:#d8ad5f; --gold-soft:#3a2f1c;
+  --study:#86b9a6; --sermon:#d9a066; --news:#8fb0d9; --danger:#e08a7a; --danger-soft:#3a1f1b; color-scheme:dark}
+:root{padding-top:env(safe-area-inset-top,0px)}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+body{font-family:var(--f-ui);font-size:15px;line-height:1.5}
+[hidden]{display:none!important}
+.wrap{max-width:680px;margin:0 auto;padding-inline:16px;padding-block:14px 110px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.brand{font-family:var(--f-display);font-weight:700;letter-spacing:.08em;font-size:1rem;color:var(--accent)}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.big{font-family:var(--f-display);font-size:1.7rem;font-weight:700;letter-spacing:.02em;line-height:1.15}
+.serif{font-family:var(--f-body)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.muted{color:var(--muted)}
+.small{font-size:.82rem}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:500;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.55;cursor:default}
+.link{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-weight:600}
+.link.danger{color:var(--danger)}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.82rem;background:var(--surface);cursor:pointer}
+.chip.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.tag{display:inline-block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid currentColor}
+.tag.study{color:var(--study)} .tag.sermon{color:var(--sermon)} .tag.news{color:var(--news)} .tag.pin{color:var(--gold)} .tag.leaders{color:var(--gold)} .tag.answered{color:var(--accent)}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;font-weight:500}
+.field{width:100%;box-sizing:border-box;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 13px;font-size:16px}
+textarea.field{min-height:120px;resize:vertical;font-family:var(--f-body)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box}
+.card h3{font-family:var(--f-body);font-weight:600;font-size:1.15rem}
+.card .excerpt{font-family:var(--f-body);color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.body{font-family:var(--f-body);font-size:1.03rem;line-height:1.7;display:flex;flex-direction:column;gap:12px;max-width:65ch;overflow-wrap:anywhere}
+.comment{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.comment p{font-family:var(--f-body);overflow-wrap:anywhere}
+.prayer{display:flex;flex-direction:column;gap:8px}
+.banner{background:var(--gold-soft);border:1px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:12px}
+.err{background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 14px;font-size:.88rem}
+.ok{background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:10px 14px;font-size:.88rem}
+.member{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.member:last-child{border-bottom:0}
+.badge{background:var(--danger);color:#fff;border-radius:999px;font-size:.65rem;padding:1px 6px;margin-left:4px;font-weight:700}
+audio{width:100%}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs button{flex:1;background:none;border:0;padding:10px 4px 9px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+.tabs button[aria-current="true"]{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:.85rem;z-index:10}
+.center{min-height:70vh;display:flex;flex-direction:column;justify-content:center}
+</style>
+<style>
+.logo{width:36px;height:36px;border-radius:8px;object-fit:contain;background:#fff;border:1px solid var(--line)}
+.logo.big{width:84px;height:84px;border-radius:18px}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{border:0;background:var(--surface);padding:4px 10px;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.tagline{font-family:var(--f-body);font-style:italic;color:var(--gold)}
+</style>
+<style>
+/* AGS Jubelate palette, taken from the church logo: red figures, charcoal cross */
+:root{--bg:#f4f1ef;--surface:#fffdfb;--ink:#26221f;--muted:#6b6560;--line:#e3dcd7;--accent:#a42f29;--accent-soft:#f6e2df;--gold:#575759;--gold-soft:#ecebee;--study:#a42f29;--sermon:#575759;--news:#2f5d7c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151314;--surface:#1f1c1d;--ink:#ece6e2;--muted:#a59e99;--line:#332e2f;--accent:#e2766c;--accent-soft:#3b1f1c;--gold:#bdbac0;--gold-soft:#2a292c;--study:#e2766c;--sermon:#bdbac0;--news:#8fb6d6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151314;--surface:#1f1c1d;--ink:#ece6e2;--muted:#a59e99;--line:#332e2f;--accent:#e2766c;--accent-soft:#3b1f1c;--gold:#bdbac0;--gold-soft:#2a292c;--study:#e2766c;--sermon:#bdbac0;--news:#8fb6d6;color-scheme:dark}
+.contact a{word-break:break-word}
+/* Larger, easier defaults for older eyes and hands; members can make text bigger still */
+html{font-size:17px}
+html[data-size="1"]{font-size:19px}
+html[data-size="2"]{font-size:21.5px}
+body{font-size:1rem!important;line-height:1.6!important}
+.btn{min-height:48px;padding:10px 18px!important;font-size:1rem}
+.chip{min-height:40px;padding:8px 16px!important;font-size:.95rem!important}
+.field{font-size:max(16px,1rem)!important;padding:13px 14px!important}
+.small{font-size:.9rem!important}
+.eyebrow{font-size:.78rem!important}
+.tag{font-size:.74rem!important}
+.link{min-height:40px;font-size:1rem}
+.tabs button{font-size:min(.8rem,14px)!important;padding:10px 2px 10px!important;min-height:64px}
+.tabs svg{width:28px!important;height:28px!important}
+.tabs button>span{white-space:nowrap}
+.lang button{padding:8px 13px!important;font-size:.85rem!important}
+.install{background:var(--accent);color:#fff;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.install .btn{background:#fff;color:var(--accent);border-color:#fff;font-weight:700}
+.install .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+.install b{font-size:1.1rem}
+.steps{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.steps .num{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.1rem}
+.ios-ico{display:inline-block;vertical-align:middle;width:30px;height:30px;border:2px solid var(--accent);border-radius:8px;padding:3px;margin:0 4px;background:var(--surface)}
+.ios-ico svg{width:100%;height:100%;stroke:#0a84ff;fill:none;stroke-width:2}
+.sizes{display:flex;gap:8px;flex-wrap:wrap}
+.sizes button{min-width:56px}
+.pwrow{position:relative}
+.pwrow .field{padding-right:84px!important}
+.pwrow button{position:absolute;right:6px;top:50%;transform:translateY(-50%);min-height:38px;padding:4px 12px;border:0;background:var(--accent-soft);color:var(--accent);border-radius:8px;font-weight:600;cursor:pointer}
+</style>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header class="row between" style="margin-bottom:14px">
+    <span class="row" style="gap:10px"><img class="logo" id="logo" alt="" hidden><span class="brand" id="brand">AGS JUBELATE</span></span>
+    <span class="lang" role="group" aria-label="Taal / Language"><button data-lang="af">AF</button><button data-lang="en">EN</button></span>
+  </header>
+  <div id="banner"></div>
+  <main id="view"><div class="center muted" style="text-align:center">…</div></main>
+</div>
+<nav class="tabs" id="tabs" hidden>
+  <button data-tab="feed"><svg viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6v14"/></svg><span data-t="tabFeed"></span></button>
+  <button data-tab="prayer"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg><span data-t="tabPrayer"></span></button>
+  <button data-tab="admin" id="adminTab" hidden><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><span><span data-t="tabAdmin"></span><span id="pendingBadge"></span></span></button>
+  <button data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><span data-t="tabMe"></span></button>
+</nav>
+
+<script>
+"use strict";
+const CFG=Object.assign({appName:"AGS Jubelate",churchName:"AGS Jubelate",defaultLanguage:"af",logo:"",logoFallback:"",tagline:{},address:"",phone:"",email:"",website:"",supabaseUrl:"",supabaseAnonKey:""},window.APP_CONFIG||{});
+const DEMO=!CFG.supabaseUrl||!CFG.supabaseAnonKey||!window.supabase;
+const PAGE=15;
+
+/* ================= LANGUAGE ================= */
+const I18N={
+en:{tabFeed:"This week",tabPrayer:"Prayer",tabAdmin:"Admin",tabMe:"Me",loading:"Loading…",
+ kind_study:"Weekly study",kind_sermon:"Sermon",kind_news:"News",f_all:"All",f_study:"Studies",f_sermon:"Sermons",f_news:"News",
+ newPost:"+ New post",pinned:"Pinned",weekOf:"Week of",comments1:"comment",commentsN:"comments",recording:"🎧 Recording",attachment:"📎 Attachment",linkTag:"🔗 Link",
+ emptyFeed:"Nothing posted here yet.",emptyFeedAdmin:"Tap “New post” to share this week's study, sermon or news.",emptyFeedMember:"Your church leaders will post the weekly study, sermon notes and news here.",
+ olderPosts:"Show older posts",removed:"This post was removed.",back:"‹ Back",backWeek:"‹ This week",watch:"▶ Watch",openLink:"🔗 Open link",open:"📎 Open",attachmentWord:"attachment",
+ postedBy:"Posted by",aLeader:"a leader",edit:"Edit",del:"Delete",tapAgainDel:"Tap again to delete",tapAgain:"Tap again",discussion:"Discussion",noComments:"No comments yet. Start the conversation.",
+ commentPh:"Share a thought or question…",postComment:"Post comment",member:"Member",editPost:"Edit post",cancel:"‹ Cancel",type:"Type",title:"Title",scripture:"Scripture (optional)",scripturePh:"e.g. John 3:1-21",
+ message:"Message",messagePh:"Notes, questions, announcement… Leave a blank line between paragraphs.",link:"Link (optional: YouTube, Facebook live, sign-up form…)",
+ file:"Recording or file (optional: audio, PDF or image, up to 50 MB)",currentFile:"Current file:",remove:"remove",pinTop:"Pin to the top",saveChanges:"Save changes",publish:"Publish to everyone",uploading:"Uploading file…",
+ needTitle:"Give the post a title.",tooBig:"That file is over 50 MB. Upload long recordings to YouTube and paste the link instead.",saved:"Saved",published:"Published",postDeleted:"Post deleted",
+ prayEyebrow:"Carry each other's burdens",prayTitle:"Prayer",sharePrayer:"+ Share a prayer request",request:"Request",requestPh:"e.g. Healing for my dad",details:"Details (optional)",whoSees:"Who can see it",
+ visAll:"The whole church family",visLeaders:"Church leaders only",shareRequest:"Share request",current:"Current",answered:"Answered",leadersOnly:"Leaders only",imPraying:"I'm praying",praying:"Praying",
+ markAnswered:"Mark answered",noAnswered:"No answered prayers yet.",noPrayers:"No prayer requests right now.",showMore:"Show more",needRequest:"Write a short request first.",prayerShared:"Shared. We're praying with you.",praiseGod:"Praise God! Moved to Answered",
+ adminEyebrow:"Administrator",adminTitle:"Admin",newWeekly:"+ New weekly post",waiting:"Waiting for approval",noneWaiting:"No one is waiting.",members:"Members",blocked:"Blocked",joined:"Joined",you:"(you)",noName:"(no name)",
+ approve:"Approve",decline:"Decline",removeAdmin:"Remove admin",makeAdmin:"Make admin",block:"Block",restore:"Restore",updated:"Updated",declined:"Declined",adminOnly:"Only administrators can see this page.",
+ adminNote:"Approve only people you know from the church. Blocked members can't see anything until restored.",
+ myAccount:"My account",roleAdmin:"Administrator",roleMember:"Member",of:"of",changePw:"Change password",signOut:"Sign out",onPhone:"Put it on your phone",
+ onPhoneText:"iPhone: open this page in Safari, tap Share, then “Add to Home Screen”. Android: tap the ⋮ menu, then “Add to Home screen”.",
+ commitment:"Our commitment",commitmentText:"Only approved members of our church can see posts, comments and prayer requests. Requests marked “leaders only” are seen by you and the church leaders alone.",
+ visitUs:"Contact us",installTitle:"Put AGS Jubelate on your phone",installBody:"It takes one minute. Then you open it with one tap, like any other app.",installBtn:"Install now",showHow:"Show me how",notNow:"Not now",
+ installDone:"Done! Look for the AGS Jubelate icon on your home screen.",installHead:"Install the app",installMeTitle:"Install on your phone",installed:"✓ The app is installed on this phone.",
+ iosStep1:"Tap the Share button at the bottom of Safari. It looks like a square with an arrow pointing up:",iosStep2:"Scroll down a little and tap “Add to Home Screen”. It has a square with a plus:",
+ iosStep3:"Tap “Add” at the top right. The AGS Jubelate icon now appears on your home screen.",iosNotSafari:"First open this page in Safari: tap the ⋯ or Share button and choose “Open in Safari”. Or copy the link and paste it into Safari.",
+ andStep1:"Tap the three dots ⋮ at the top right of Chrome.",andStep2:"Tap “Install app” or “Add to Home screen”.",andStep3:"Tap “Install” or “Add”. The AGS Jubelate icon now appears on your home screen.",
+ andSamsung:"Samsung Internet: tap the menu ≡ at the bottom, then “Add page to”, then “Home screen”.",inApp:"You opened this link inside WhatsApp or Facebook. To install, first open it in your phone's own browser: tap the ⋮ or ⋯ menu and choose “Open in Chrome” or “Open in Safari”.",
+ copyLink:"Copy the link",copied:"Link copied. Paste it into Safari or Chrome.",textSize:"Text size",sizeN:"Normal",sizeL:"Large",sizeXL:"Extra large",show:"Show",hide:"Hide",onPhoneShort:"Install the app on this phone",language:"Language",pastorL:"Pastor",office:"Church office",directions:"Directions",facebookL:"Facebook",youtubeL:"YouTube (sermons)",call:"Call",
+ welcome:"Welcome back",join:"Join us",resetTitle:"Reset your password",newPwTitle:"Choose a new password",yourName:"Your name",emailL:"Email",password:"Password",newPassword:"New password",
+ signIn:"Sign in",createAccount:"Create account",sendReset:"Email me a reset link",savePw:"Save password",newHere:"New here? Create an account",forgot:"Forgot password",backSignIn:"Back to sign in",
+ signupNote:"After you sign up, a church administrator approves your account. This keeps prayer requests within our church family.",
+ fillAll:"Please fill in your name, email and a password.",accountCreated:"Account created. Check your email ({email}) and tap the confirmation link, then sign in here.",fillLogin:"Enter your email and password.",
+ fillEmail:"Enter the email you signed up with.",resetSent:"If that email has an account, a reset link is on its way. Open it on this device.",pwShort:"Use a password of at least 6 characters.",pwSaved:"Password saved",
+ paused:"Access paused",almost:"Almost there",pausedText:"Your access has been paused by an administrator. Please speak to one of the church leaders.",
+ pendingText:"Thanks for signing up{name}. A church administrator will approve your account soon. Check back a little later.",checkAgain:"Check again",
+ errLogin:"That email and password don't match. Check them, or tap 'Forgot password'.",errConfirm:"Please confirm your email first: open the link we emailed you.",errExists:"That email already has an account. Sign in instead.",
+ errRate:"Too many emails sent recently. Wait a few minutes and try again.",errNet:"Can't reach the server. Check your connection and try again.",tryAgain:"Try again",
+ justNow:"just now",minAgo:"min ago",hAgo:"h ago",dAgo:"d ago",
+ demoBanner:"<b>Preview with sample content.</b> Nothing here is saved or shared. It becomes the real app once the Supabase details are added to config.js.",demoSignout:"Preview mode: sign-out is disabled"},
+af:{tabFeed:"Hierdie week",tabPrayer:"Gebed",tabAdmin:"Admin",tabMe:"Ek",loading:"Laai…",
+ kind_study:"Weeklikse studie",kind_sermon:"Preek",kind_news:"Nuus",f_all:"Alles",f_study:"Studies",f_sermon:"Preke",f_news:"Nuus",
+ newPost:"+ Nuwe plasing",pinned:"Vasgepen",weekOf:"Week van",comments1:"kommentaar",commentsN:"kommentare",recording:"🎧 Opname",attachment:"📎 Aanhangsel",linkTag:"🔗 Skakel",
+ emptyFeed:"Nog niks hier geplaas nie.",emptyFeedAdmin:"Tik op “Nuwe plasing” om hierdie week se studie, preek of nuus te deel.",emptyFeedMember:"Ons kerkleiers plaas die weeklikse studie, preeknotas en nuus hier.",
+ olderPosts:"Wys ouer plasings",removed:"Hierdie plasing is verwyder.",back:"‹ Terug",backWeek:"‹ Hierdie week",watch:"▶ Kyk",openLink:"🔗 Maak skakel oop",open:"📎 Maak oop:",attachmentWord:"aanhangsel",
+ postedBy:"Geplaas deur",aLeader:"'n leier",edit:"Wysig",del:"Skrap",tapAgainDel:"Tik weer om te skrap",tapAgain:"Tik weer",discussion:"Gesprek",noComments:"Nog geen kommentaar nie. Begin die gesprek.",
+ commentPh:"Deel 'n gedagte of vraag…",postComment:"Plaas kommentaar",member:"Lid",editPost:"Wysig plasing",cancel:"‹ Kanselleer",type:"Soort",title:"Opskrif",scripture:"Skrifgedeelte (opsioneel)",scripturePh:"bv. Johannes 3:1-21",
+ message:"Boodskap",messagePh:"Notas, vrae, aankondiging… Laat 'n oop reël tussen paragrawe.",link:"Skakel (opsioneel: YouTube, Facebook live, inskrywingsvorm…)",
+ file:"Opname of lêer (opsioneel: klank, PDF of foto, tot 50 MB)",currentFile:"Huidige lêer:",remove:"verwyder",pinTop:"Pen bo-aan vas",saveChanges:"Stoor veranderinge",publish:"Publiseer vir almal",uploading:"Laai lêer op…",
+ needTitle:"Gee die plasing 'n opskrif.",tooBig:"Daardie lêer is groter as 50 MB. Laai lang opnames op YouTube en plak eerder die skakel hier.",saved:"Gestoor",published:"Gepubliseer",postDeleted:"Plasing geskrap",
+ prayEyebrow:"Dra mekaar se laste",prayTitle:"Gebed",sharePrayer:"+ Deel 'n gebedsversoek",request:"Versoek",requestPh:"bv. Genesing vir my pa",details:"Besonderhede (opsioneel)",whoSees:"Wie kan dit sien",
+ visAll:"Die hele kerkfamilie",visLeaders:"Slegs kerkleiers",shareRequest:"Deel versoek",current:"Huidig",answered:"Beantwoord",leadersOnly:"Slegs leiers",imPraying:"Ek bid saam",praying:"Ek bid",
+ markAnswered:"Merk as beantwoord",noAnswered:"Nog geen beantwoorde gebede nie.",noPrayers:"Tans geen gebedsversoeke nie.",showMore:"Wys meer",needRequest:"Skryf eers 'n kort versoek.",prayerShared:"Gedeel. Ons bid saam met jou.",praiseGod:"Prys die Here! Geskuif na Beantwoord",
+ adminEyebrow:"Administrateur",adminTitle:"Admin",newWeekly:"+ Nuwe weeklikse plasing",waiting:"Wag vir goedkeuring",noneWaiting:"Niemand wag nie.",members:"Lede",blocked:"Geblokkeer",joined:"Aangesluit",you:"(jy)",noName:"(geen naam)",
+ approve:"Keur goed",decline:"Weier",removeAdmin:"Verwyder admin",makeAdmin:"Maak admin",block:"Blokkeer",restore:"Herstel",updated:"Opgedateer",declined:"Geweier",adminOnly:"Slegs administrateurs kan hierdie bladsy sien.",
+ adminNote:"Keur net mense goed wat jy van die kerk ken. Geblokkeerde lede kan niks sien totdat hulle herstel word nie.",
+ myAccount:"My rekening",roleAdmin:"Administrateur",roleMember:"Lid",of:"van",changePw:"Verander wagwoord",signOut:"Teken uit",onPhone:"Sit dit op jou foon",
+ onPhoneText:"iPhone: maak hierdie bladsy in Safari oop, tik Deel en dan “Add to Home Screen” (Voeg by tuisskerm). Android: tik die ⋮-kieslys en dan “Add to Home screen”.",
+ commitment:"Ons belofte",commitmentText:"Net goedgekeurde lede van ons gemeente kan plasings, kommentaar en gebedsversoeke sien. Versoeke gemerk “slegs leiers” word net deur jou en die kerkleiers gesien.",
+ visitUs:"Kontak ons",installTitle:"Sit AGS Jubelate op jou foon",installBody:"Dit neem een minuut. Daarna maak jy dit met een tik oop, soos enige ander toep.",installBtn:"Installeer nou",showHow:"Wys my hoe",notNow:"Nie nou nie",
+ installDone:"Klaar! Soek die AGS Jubelate-ikoon op jou tuisskerm.",installHead:"Installeer die toep",installMeTitle:"Installeer op jou foon",installed:"✓ Die toep is op hierdie foon geïnstalleer.",
+ iosStep1:"Tik die Deel-knoppie onderaan Safari. Dit lyk soos 'n blokkie met 'n pyltjie wat opwys:",iosStep2:"Rol bietjie af en tik “Add to Home Screen” (Voeg by tuisskerm). Dit het 'n blokkie met 'n plusteken:",
+ iosStep3:"Tik “Add” (Voeg by) regs bo. Die AGS Jubelate-ikoon verskyn nou op jou tuisskerm.",iosNotSafari:"Maak eers hierdie bladsy in Safari oop: tik die ⋯- of Deel-knoppie en kies “Open in Safari”. Of kopieer die skakel en plak dit in Safari.",
+ andStep1:"Tik die drie kolletjies ⋮ regs bo in Chrome.",andStep2:"Tik “Install app” (Installeer toep) of “Add to Home screen” (Voeg by tuisskerm).",andStep3:"Tik “Install” of “Add”. Die AGS Jubelate-ikoon verskyn nou op jou tuisskerm.",
+ andSamsung:"Samsung Internet: tik die kieslys ≡ onderaan, dan “Add page to” en dan “Home screen”.",inApp:"Jy het hierdie skakel binne WhatsApp of Facebook oopgemaak. Om te installeer, maak dit eers in jou foon se eie blaaier oop: tik die ⋮- of ⋯-kieslys en kies “Open in Chrome” of “Open in Safari”.",
+ copyLink:"Kopieer die skakel",copied:"Skakel gekopieer. Plak dit in Safari of Chrome.",textSize:"Teksgrootte",sizeN:"Normaal",sizeL:"Groot",sizeXL:"Ekstra groot",show:"Wys",hide:"Steek weg",onPhoneShort:"Installeer die toep op hierdie foon",language:"Taal",pastorL:"Pastoor",office:"Kerkkantoor",directions:"Aanwysings",facebookL:"Facebook",youtubeL:"YouTube (preke)",call:"Bel",
+ welcome:"Welkom terug",join:"Sluit by ons aan",resetTitle:"Herstel jou wagwoord",newPwTitle:"Kies 'n nuwe wagwoord",yourName:"Jou naam",emailL:"E-pos",password:"Wagwoord",newPassword:"Nuwe wagwoord",
+ signIn:"Teken in",createAccount:"Skep rekening",sendReset:"Stuur vir my 'n herstelskakel",savePw:"Stoor wagwoord",newHere:"Nuut hier? Skep 'n rekening",forgot:"Wagwoord vergeet",backSignIn:"Terug na aanteken",
+ signupNote:"Nadat jy ingeskryf het, keur 'n kerkadministrateur jou rekening goed. So bly gebedsversoeke binne ons kerkfamilie.",
+ fillAll:"Vul asseblief jou naam, e-pos en 'n wagwoord in.",accountCreated:"Rekening geskep. Kyk in jou e-pos ({email}), tik op die bevestigingskakel en teken dan hier in.",fillLogin:"Vul jou e-pos en wagwoord in.",
+ fillEmail:"Vul die e-pos in waarmee jy ingeskryf het.",resetSent:"As daardie e-pos 'n rekening het, is 'n herstelskakel op pad. Maak dit op hierdie toestel oop.",pwShort:"Gebruik 'n wagwoord van minstens 6 karakters.",pwSaved:"Wagwoord gestoor",
+ paused:"Toegang opgeskort",almost:"Amper klaar",pausedText:"'n Administrateur het jou toegang opgeskort. Praat asseblief met een van die kerkleiers.",
+ pendingText:"Dankie dat jy ingeskryf het{name}. 'n Kerkadministrateur sal jou rekening binnekort goedkeur. Kyk gerus later weer.",checkAgain:"Kyk weer",
+ errLogin:"Daardie e-pos en wagwoord stem nie ooreen nie. Kontroleer dit, of tik op 'Wagwoord vergeet'.",errConfirm:"Bevestig asseblief eers jou e-pos: maak die skakel oop wat ons vir jou gestuur het.",errExists:"Daardie e-pos het reeds 'n rekening. Teken eerder in.",
+ errRate:"Te veel e-posse is onlangs gestuur. Wag 'n paar minute en probeer weer.",errNet:"Kan nie die bediener bereik nie. Kontroleer jou verbinding en probeer weer.",tryAgain:"Probeer weer",
+ justNow:"so pas",minAgo:"min gelede",hAgo:"h gelede",dAgo:"d gelede",
+ demoBanner:"<b>Voorskou met voorbeeldinhoud.</b> Niks hier word gestoor of gedeel nie. Dit word die regte toep sodra die Supabase-besonderhede in config.js ingevul is.",demoSignout:"Voorskou: uitteken is afgeskakel"}
+};
+let LANG="af";
+try{const s=localStorage.getItem("jubelate-lang");LANG=(s==="en"||s==="af")?s:(CFG.defaultLanguage==="en"?"en":"af")}catch(e){LANG=CFG.defaultLanguage==="en"?"en":"af"}
+const t=(k,v)=>{let s=(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;if(v)for(const [a,b] of Object.entries(v))s=s.replace("{"+a+"}",b);return s};
+const KIND=k=>t("kind_"+k);
+function applyStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG?"true":"false"));
+  if(DEMO)$("#banner").innerHTML=`<div class="banner">${t("demoBanner")}</div>`;
+}
+
+/* ================= INSTALL HELP ================= */
+const UA=navigator.userAgent||"";
+const IS_IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const IS_ANDROID=/Android/i.test(UA);
+const IN_APP=/FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line\//i.test(UA);
+const IOS_SAFARI=IS_IOS&&!/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(UA)&&!IN_APP;
+const SAMSUNG=/SamsungBrowser/i.test(UA);
+const STANDALONE=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;render()});
+window.addEventListener("appinstalled",()=>{deferredPrompt=null;try{localStorage.setItem("jubelate-installed","1")}catch(x){}toast(t("installDone"));render()});
+function installDismissed(){try{return localStorage.getItem("jubelate-install-later")===new Date().toDateString()}catch(e){return false}}
+function installBanner(){
+  if(STANDALONE()||!(IS_IOS||IS_ANDROID)||installDismissed())return "";
+  return `<div class="install"><b>${t("installTitle")}</b><span>${t("installBody")}</span><div class="row">${deferredPrompt?`<button class="btn" data-act="install">${t("installBtn")}</button>`:`<button class="btn" data-act="howinstall">${t("showHow")}</button>`}<button class="btn ghost" data-act="installlater">${t("notNow")}</button></div></div>`;
+}
+const SHARE_SVG='<span class="ios-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg></span>';
+const ADD_SVG='<span class="ios-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg></span>';
+function viewInstall(){
+  let body;
+  if(STANDALONE())body=`<div class="ok">${t("installed")}</div>`;
+  else if(IN_APP)body=`<div class="panel stack"><p>${t("inApp")}</p><button class="btn primary" data-act="copylink">${t("copyLink")}</button></div>`;
+  else if(IS_IOS&&!IOS_SAFARI)body=`<div class="panel stack"><p>${t("iosNotSafari")}</p><button class="btn primary" data-act="copylink">${t("copyLink")}</button></div>`;
+  else if(IS_IOS)body=`<ol class="steps"><li><span class="num">1</span><span>${t("iosStep1")} ${SHARE_SVG}</span></li><li><span class="num">2</span><span>${t("iosStep2")} ${ADD_SVG}</span></li><li><span class="num">3</span><span>${t("iosStep3")}</span></li></ol>`;
+  else body=`${deferredPrompt?`<button class="btn primary" style="font-size:1.15rem" data-act="install">${t("installBtn")}</button>`:""}
+    <ol class="steps"><li><span class="num">1</span><span>${t("andStep1")}</span></li><li><span class="num">2</span><span>${t("andStep2")}</span></li><li><span class="num">3</span><span>${t("andStep3")}</span></li></ol>
+    ${SAMSUNG||!IS_ANDROID?`<p class="small muted">${t("andSamsung")}</p>`:""}`;
+  return `<div class="stack"><button class="link" style="align-self:flex-start" data-act="closeinstall">${t("back")}</button>
+   <div style="display:flex;gap:14px;align-items:center">${logoBig()}<h1 class="big">${t("installHead")}</h1></div>${body}</div>`;
+}
+let TEXTSIZE="0";try{TEXTSIZE=localStorage.getItem("jubelate-size")||"0"}catch(e){}
+function applySize(){document.documentElement.setAttribute("data-size",TEXTSIZE)}
+applySize();
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function linkify(x){return esc(x).replace(/(https?:\/\/[^\s<]+)/g,u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`)}
+function paras(x){return String(x||"").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${linkify(p).replace(/\n/g,"<br>")}</p>`).join("")}
+function fmtDate(d){try{return new Date(d).toLocaleDateString(LANG==="af"?"af-ZA":"en-ZA",{day:"numeric",month:"short",year:"numeric"})}catch(e){return d}}
+function ago(d){const s=(Date.now()-new Date(d))/1000;if(s<60)return t("justNow");if(s<3600)return Math.floor(s/60)+" "+t("minAgo");if(s<86400)return Math.floor(s/3600)+" "+t("hAgo");if(s<604800)return Math.floor(s/86400)+" "+t("dAgo");return fmtDate(d)}
+const bg=r=>"https://www.biblegateway.com/passage/?search="+encodeURIComponent(r)+"&version="+(LANG==="af"?"AFR83":"ESV");
+function toast(m){document.querySelectorAll(".toast").forEach(x=>x.remove());const el=document.createElement("div");el.className="toast";el.textContent=m;document.body.appendChild(el);setTimeout(()=>el.remove(),2200)}
+function isAudio(u){return /\.(mp3|m4a|aac|wav|ogg)(\?|$)/i.test(u||"")}
+function isImage(u){return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(u||"")}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function friendly(e){const m=(e&&e.message)||String(e);
+  if(/Invalid login/i.test(m))return t("errLogin");if(/Email not confirmed/i.test(m))return t("errConfirm");if(/already registered/i.test(m))return t("errExists");
+  if(/Password should be/i.test(m))return t("pwShort");if(/rate limit/i.test(m))return t("errRate");if(/Failed to fetch|NetworkError|Load failed/i.test(m))return t("errNet");return m}
+function setupLogo(){const img=$("#logo");const srcs=[CFG.logo,CFG.logoFallback].filter(Boolean);let i=0;if(!srcs.length)return;
+  img.onerror=()=>{i++;if(i<srcs.length)img.src=srcs[i];else img.hidden=true};img.onload=()=>{img.hidden=false};img.alt=CFG.appName;img.src=srcs[0]}
+function logoBig(){const srcs=[CFG.logo,CFG.logoFallback].filter(Boolean);if(!srcs.length)return "";return `<img class="logo big" src="${esc(srcs[0])}" alt="${esc(CFG.appName)}" ${srcs[1]?`onerror="this.onerror=function(){this.hidden=true};this.src='${esc(srcs[1])}'"`:`onerror="this.hidden=true"`}>`}
+
+/* ================= DATA: Supabase ================= */
+function supabaseApi(){
+  const sb=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const chk=({data,error})=>{if(error)throw error;return data};
+  let uid=null;
+  return {
+    onAuth(cb){sb.auth.onAuthStateChange((ev,session)=>{uid=session?session.user.id:null;cb(ev,session)})},
+    async session(){const {data}=await sb.auth.getSession();uid=data.session?data.session.user.id:null;return data.session},
+    async signUp(name,email,pw){const {data,error}=await sb.auth.signUp({email,password:pw,options:{data:{full_name:name},emailRedirectTo:location.origin+location.pathname}});if(error)throw error;return !!data.session},
+    async signIn(email,pw){chk(await sb.auth.signInWithPassword({email,password:pw}))},
+    async signOut(){await sb.auth.signOut()},
+    async resetPassword(email){chk(await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}))},
+    async setPassword(pw){chk(await sb.auth.updateUser({password:pw}))},
+    async me(){return chk(await sb.from("profiles").select("*").eq("id",uid).maybeSingle())},
+    myId:()=>uid,
+    async listPosts(kind,page){let q=sb.from("posts").select("*, profiles(full_name), comments(count)").order("pinned",{ascending:false}).order("week_of",{ascending:false}).order("created_at",{ascending:false}).range(page*PAGE,page*PAGE+PAGE-1);if(kind!=="all")q=q.eq("kind",kind);return chk(await q).map(p=>({...p,comment_count:(p.comments&&p.comments[0]&&p.comments[0].count)||0}))},
+    async getPost(id){return chk(await sb.from("posts").select("*, profiles(full_name)").eq("id",id).maybeSingle())},
+    async savePost(id,d){if(id)return chk(await sb.from("posts").update(d).eq("id",id).select().single());return chk(await sb.from("posts").insert(d).select().single())},
+    async deletePost(id){chk(await sb.from("posts").delete().eq("id",id))},
+    async upload(file){const path=Date.now()+"-"+file.name.replace(/[^\w.\-]+/g,"_");chk(await sb.storage.from("media").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type||undefined}));return {url:sb.storage.from("media").getPublicUrl(path).data.publicUrl,name:file.name}},
+    async listComments(pid){return chk(await sb.from("comments").select("*, profiles(full_name)").eq("post_id",pid).order("created_at"))},
+    async addComment(pid,body){chk(await sb.from("comments").insert({post_id:pid,body}))},
+    async deleteComment(id){chk(await sb.from("comments").delete().eq("id",id))},
+    async listPrayers(answered,page){return chk(await sb.from("prayers").select("*, profiles(full_name), prayer_support(user_id)").eq("answered",answered).order("created_at",{ascending:false}).range(page*PAGE,page*PAGE+PAGE-1))},
+    async addPrayer(d){chk(await sb.from("prayers").insert(d))},
+    async updatePrayer(id,d){chk(await sb.from("prayers").update(d).eq("id",id))},
+    async deletePrayer(id){chk(await sb.from("prayers").delete().eq("id",id))},
+    async pray(id,on){if(on)chk(await sb.from("prayer_support").insert({prayer_id:id}));else chk(await sb.from("prayer_support").delete().eq("prayer_id",id).eq("user_id",uid))},
+    async listMembers(){return chk(await sb.from("profiles").select("*").order("status").order("created_at",{ascending:false}))},
+    async updateMember(id,d){chk(await sb.from("profiles").update(d).eq("id",id))},
+    async removeMember(id){chk(await sb.from("profiles").delete().eq("id",id))},
+    async pendingCount(){const {count,error}=await sb.from("profiles").select("id",{count:"exact",head:true}).eq("status","pending");if(error)return 0;return count||0}
+  };
+}
+
+
+/* ================= DATA: preview (sample content, nothing saved) ================= */
+function demoApi(){
+  const me={id:"u1",full_name:"Nathan F.",role:"admin",status:"approved",created_at:new Date().toISOString()};
+  const people={u1:me,u2:{id:"u2",full_name:"Sarah M.",role:"member",status:"approved",created_at:"2026-09-01"},u3:{id:"u3",full_name:"Pieter V.",role:"member",status:"approved",created_at:"2026-09-03"},u4:{id:"u4",full_name:"Thandi K.",role:"member",status:"pending",created_at:new Date().toISOString()}};
+  let n=100;const P=id=>({full_name:people[id]?people[id].full_name:"Someone"});
+  const d=x=>new Date(Date.now()-x*86400000).toISOString();
+  let posts=[
+    {id:1,kind:"news",title:"Example: Men's breakfast this Saturday",body:"Join us at 7:30 in the church hall. Bring a friend!\n\nRSVP by replying below so the kitchen team knows numbers.",scripture:"",link_url:"",file_url:"",file_name:"",week_of:today(),pinned:true,author_id:"u1",created_at:d(0)},
+    {id:2,kind:"study",title:"Example: Week 3 — Born from above (John 3)",body:"This week we read John 3 together. Read the chapter twice before Wednesday.\n\nQuestions to discuss:\n1. What did Nicodemus misunderstand about being born again?\n2. Why does Jesus point to the bronze serpent in Numbers 21?\n3. Where do you need to decrease so He can increase?",scripture:"John 3",link_url:"",file_url:"",file_name:"",week_of:today(),pinned:false,author_id:"u1",created_at:d(1)},
+    {id:3,kind:"sermon",title:"Example: Sunday — The Lamb of God",body:"Outline:\n1. Who John the Baptist was\n2. Why a lamb?\n3. Behold Him today\n\nThe recording is linked below.",scripture:"John 1:29-34",link_url:"https://www.youtube.com/",file_url:"",file_name:"",week_of:d(2).slice(0,10),pinned:false,author_id:"u1",created_at:d(2)}];
+  let comments=[{id:11,post_id:2,author_id:"u2",body:"Looking forward to Wednesday. Question 3 hit home.",created_at:d(0.5)},{id:12,post_id:1,author_id:"u3",body:"Count me in, plus one.",created_at:d(0.2)}];
+  let prayers=[{id:21,author_id:"u2",title:"My mother's surgery on Thursday",body:"Please pray for the surgeons and for peace for our family.",visibility:"all",answered:false,created_at:d(0.3),support:["u3"]},
+    {id:22,author_id:"u3",title:"New job",body:"I start a new role next month. Pray for wisdom and a good witness.",visibility:"all",answered:false,created_at:d(3),support:["u1","u2"]},
+    {id:23,author_id:"u2",title:"Safe travel",body:"Thank you all, we arrived safely!",visibility:"all",answered:true,created_at:d(9),support:["u1"]}];
+  const w=v=>new Promise(r=>setTimeout(()=>r(JSON.parse(JSON.stringify(v))),60));
+  const sortPosts=a=>a.sort((x,y)=>(y.pinned-x.pinned)||y.week_of.localeCompare(x.week_of)||y.created_at.localeCompare(x.created_at));
+  return {
+    demo:true,onAuth(){},async session(){return {user:{id:"u1"}}},async signUp(){return true},async signIn(){},async signOut(){toast("Preview mode: sign-out is disabled")},async resetPassword(){},async setPassword(){},
+    async me(){return w(me)},myId:()=>"u1",
+    async listPosts(kind,page){const a=sortPosts(posts.filter(p=>kind==="all"||p.kind===kind)).slice(page*PAGE,page*PAGE+PAGE);return w(a.map(p=>({...p,profiles:P(p.author_id),comment_count:comments.filter(c=>c.post_id===p.id).length})))},
+    async getPost(id){const p=posts.find(x=>x.id===id);return w(p?{...p,profiles:P(p.author_id)}:null)},
+    async savePost(id,dd){if(id){const p=posts.find(x=>x.id===id);Object.assign(p,dd);return w(p)}const p={id:++n,author_id:"u1",created_at:new Date().toISOString(),file_url:"",file_name:"",link_url:"",scripture:"",pinned:false,...dd};posts.push(p);return w(p)},
+    async deletePost(id){posts=posts.filter(p=>p.id!==id);comments=comments.filter(c=>c.post_id!==id)},
+    async upload(file){return {url:URL.createObjectURL(file),name:file.name}},
+    async listComments(pid){return w(comments.filter(c=>c.post_id===pid).map(c=>({...c,profiles:P(c.author_id)})))},
+    async addComment(pid,body){comments.push({id:++n,post_id:pid,author_id:"u1",body,created_at:new Date().toISOString()})},
+    async deleteComment(id){comments=comments.filter(c=>c.id!==id)},
+    async listPrayers(ans,page){return w(prayers.filter(p=>p.answered===ans).sort((a,b)=>b.created_at.localeCompare(a.created_at)).slice(page*PAGE,page*PAGE+PAGE).map(p=>({...p,profiles:P(p.author_id),prayer_support:p.support.map(u=>({user_id:u}))})))},
+    async addPrayer(dd){prayers.push({id:++n,author_id:"u1",answered:false,created_at:new Date().toISOString(),support:[],...dd})},
+    async updatePrayer(id,dd){Object.assign(prayers.find(p=>p.id===id),dd)},
+    async deletePrayer(id){prayers=prayers.filter(p=>p.id!==id)},
+    async pray(id,on){const p=prayers.find(x=>x.id===id);p.support=p.support.filter(u=>u!=="u1");if(on)p.support.push("u1")},
+    async listMembers(){return w(Object.values(people))},
+    async updateMember(id,dd){Object.assign(people[id],dd)},
+    async removeMember(id){delete people[id]},
+    async pendingCount(){return Object.values(people).filter(p=>p.status==="pending").length}
+  };
+}
+
+const api=DEMO?demoApi():supabaseApi();
+
+/* ================= STATE / ROUTER ================= */
+let ME=null;
+let R={install:false,tab:"feed",view:"list",kind:"all",postId:null,editId:null,answered:false,auth:"signin",recovery:false,screen:null};
+let feedPage=0,feedItems=[],feedMore=false,prayPage=0,prayItems=[],prayMore=false;
+function go(p){Object.assign(R,p);render();window.scrollTo(0,0)}
+
+/* ================= VIEWS: auth ================= */
+function viewAuth(msg,isErr){
+  const a=R.auth;R.screen={type:"auth",msg,isErr};
+  const title={signin:t("welcome"),signup:t("join"),forgot:t("resetTitle"),newpw:t("newPwTitle")}[a];
+  return `<div class="center"><div class="stack" style="max-width:420px;margin:0 auto;width:100%">
+   ${installBanner()}
+   ${logoBig()}
+   <div><div class="eyebrow">${esc(CFG.churchName)}</div><h1 class="big">${title}</h1>${CFG.tagline&&CFG.tagline[LANG]?`<p class="tagline" style="margin-top:4px">${esc(CFG.tagline[LANG])}</p>`:""}</div>
+   ${msg?`<div class="${isErr?"err":"ok"}">${esc(msg)}</div>`:""}
+   <form id="authForm" class="stack" novalidate>
+    ${a==="signup"?`<label class="f">${t("yourName")}<input class="field" id="aName" autocomplete="name" required></label>`:""}
+    ${a!=="newpw"?`<label class="f">${t("emailL")}<input class="field" id="aEmail" type="email" autocomplete="email" required></label>`:""}
+    ${a!=="forgot"?`<label class="f">${a==="newpw"?t("newPassword"):t("password")}<span class="pwrow"><input class="field" id="aPw" type="password" autocomplete="${a==="signin"?"current-password":"new-password"}" minlength="6" required><button type="button" data-act="togglepw">${t("show")}</button></span></label>`:""}
+    <button class="btn primary" type="submit">${{signin:t("signIn"),signup:t("createAccount"),forgot:t("sendReset"),newpw:t("savePw")}[a]}</button>
+   </form>
+   <div class="row between small">
+    ${a==="signin"?`<button class="link" data-auth="signup">${t("newHere")}</button><button class="link" data-auth="forgot">${t("forgot")}</button>`:""}
+    ${a!=="signin"&&a!=="newpw"?`<button class="link" data-auth="signin">${t("backSignIn")}</button>`:""}
+   </div>
+   ${a==="signup"?`<p class="small muted">${t("signupNote")}</p>`:""}
+   ${a==="signin"?contactBlock():""}
+  </div></div>`;
+}
+async function submitAuth(e){
+  e.preventDefault();const b=e.target.querySelector("button[type=submit]");b.disabled=true;
+  const name=($("#aName")||{}).value,email=(($("#aEmail")||{}).value||"").trim(),pw=($("#aPw")||{}).value;
+  try{
+    if(R.auth==="signup"){if(!name||!email||!pw)throw new Error(t("fillAll"));const hasSession=await api.signUp(name.trim(),email,pw);
+      if(!hasSession){R.auth="signin";$("#view").innerHTML=viewAuth(t("accountCreated",{email}),false);return}
+      await boot();return}
+    if(R.auth==="signin"){if(!email||!pw)throw new Error(t("fillLogin"));await api.signIn(email,pw);await boot();return}
+    if(R.auth==="forgot"){if(!email)throw new Error(t("fillEmail"));await api.resetPassword(email);R.auth="signin";$("#view").innerHTML=viewAuth(t("resetSent"),false);return}
+    if(R.auth==="newpw"){if(!pw||pw.length<6)throw new Error(t("pwShort"));await api.setPassword(pw);R.recovery=false;toast(t("pwSaved"));await boot();return}
+  }catch(err){$("#view").innerHTML=viewAuth(friendly(err),true)}
+}
+function viewPending(){
+  R.screen={type:"pending"};const blocked=ME&&ME.status==="blocked";
+  return `<div class="center"><div class="stack" style="max-width:440px;margin:0 auto">${logoBig()}
+   <div><div class="eyebrow">${esc(CFG.churchName)}</div><h1 class="big">${blocked?t("paused"):t("almost")}</h1></div>
+   <p class="serif">${blocked?t("pausedText"):esc(t("pendingText",{name:ME&&ME.full_name?", "+ME.full_name:""}))}</p>
+   <div class="row"><button class="btn primary" data-act="recheck">${t("checkAgain")}</button><button class="btn" data-act="signout">${t("signOut")}</button></div></div></div>`;
+}
+
+/* ================= VIEWS: feed ================= */
+async function loadFeed(reset){if(reset){feedPage=0;feedItems=[]}const items=await api.listPosts(R.kind,feedPage);feedItems=feedItems.concat(items);feedMore=items.length===PAGE;feedPage++}
+function postCard(p){
+  const extras=[];if(p.file_url)extras.push((isAudio(p.file_url)||isAudio(p.file_name))?t("recording"):t("attachment"));if(p.link_url)extras.push(t("linkTag"));
+  extras.push(p.comment_count+" "+(p.comment_count===1?t("comments1"):t("commentsN")));
+  return `<button class="card" data-post="${p.id}">
+   <div class="row"><span class="tag ${p.kind}">${KIND(p.kind)}</span>${p.pinned?`<span class="tag pin">${t("pinned")}</span>`:""}<span class="small muted">${t("weekOf")} ${esc(fmtDate(p.week_of))}</span></div>
+   <h3>${esc(p.title)}</h3>
+   ${p.scripture?`<div class="small" style="color:var(--gold);font-weight:600">${esc(p.scripture)}</div>`:""}
+   ${p.body?`<p class="excerpt">${esc(p.body)}</p>`:""}
+   <div class="row small muted">${extras.join(" · ")}</div></button>`;
+}
+function viewFeed(){
+  const filters=["all","study","sermon","news"];
+  return `<div class="stack">${installBanner()}
+   <div><div class="eyebrow">${esc(CFG.churchName)}</div><h1 class="big">${t("tabFeed")}</h1></div>
+   ${ME.role==="admin"?`<button class="btn primary" style="align-self:flex-start" data-act="newpost">${t("newPost")}</button>`:""}
+   <div class="row">${filters.map(k=>`<button class="chip ${R.kind===k?"on":""}" data-kind="${k}">${t("f_"+k)}</button>`).join("")}</div>
+   ${feedItems.length?feedItems.map(postCard).join(""):`<div class="panel"><p class="serif">${t("emptyFeed")}</p><p class="small muted" style="margin-top:4px">${ME.role==="admin"?t("emptyFeedAdmin"):t("emptyFeedMember")}</p></div>`}
+   ${feedMore?`<button class="btn" data-act="morefeed">${t("olderPosts")}</button>`:""}</div>`;
+}
+async function viewPost(){
+  const [p,cs]=await Promise.all([api.getPost(R.postId),api.listComments(R.postId)]);
+  if(!p)return `<div class="stack"><button class="link" data-act="back">${t("back")}</button><div class="panel">${t("removed")}</div></div>`;
+  const me=api.myId(),admin=ME.role==="admin";
+  let media="";
+  if(p.file_url){media+=(isAudio(p.file_url)||isAudio(p.file_name))?`<audio controls preload="none" src="${esc(p.file_url)}"></audio>`:(isImage(p.file_url)||isImage(p.file_name))?`<img src="${esc(p.file_url)}" alt="${esc(p.file_name)}" style="max-width:100%;border-radius:10px">`:`<a class="btn" href="${esc(p.file_url)}" target="_blank" rel="noopener">${t("open")} ${esc(p.file_name||t("attachmentWord"))}</a>`}
+  if(p.link_url)media+=`<a class="btn" href="${esc(p.link_url)}" target="_blank" rel="noopener">${/youtu/.test(p.link_url)?t("watch"):t("openLink")}</a>`;
+  return `<div class="stack"><button class="link" style="align-self:flex-start" data-act="back">${t("backWeek")}</button>
+   <div class="row"><span class="tag ${p.kind}">${KIND(p.kind)}</span>${p.pinned?`<span class="tag pin">${t("pinned")}</span>`:""}<span class="small muted">${t("weekOf")} ${esc(fmtDate(p.week_of))}</span></div>
+   <h1 class="big" style="font-family:var(--f-body);font-weight:600">${esc(p.title)}</h1>
+   ${p.scripture?`<a href="${bg(p.scripture)}" target="_blank" rel="noopener" style="font-weight:600;color:var(--gold)">${esc(p.scripture)} ›</a>`:""}
+   <div class="body">${paras(p.body)}</div>
+   ${media?`<div class="row">${media}</div>`:""}
+   <div class="small muted">${t("postedBy")} ${esc(p.profiles&&p.profiles.full_name||t("aLeader"))} · ${esc(ago(p.created_at))}</div>
+   ${admin?`<div class="row"><button class="btn" data-edit="${p.id}">${t("edit")}</button><button class="btn danger" data-delpost="${p.id}">${t("del")}</button></div>`:""}
+   <section class="panel stack"><div class="eyebrow">${t("discussion")} (${cs.length})</div>
+    ${cs.map(c=>`<div class="comment"><div class="row between small"><b>${esc(c.profiles&&c.profiles.full_name||t("member"))}</b><span class="muted">${esc(ago(c.created_at))}${c.author_id===me||admin?` · <button class="link danger small" data-delcomment="${c.id}">${t("del")}</button>`:""}</span></div><p>${linkify(c.body).replace(/\n/g,"<br>")}</p></div>`).join("")||`<p class="small muted">${t("noComments")}</p>`}
+    <form id="commentForm" class="stack"><textarea class="field" id="cBody" maxlength="2000" placeholder="${esc(t("commentPh"))}" style="min-height:80px"></textarea><button class="btn primary" style="align-self:flex-start" type="submit">${t("postComment")}</button></form>
+   </section></div>`;
+}
+async function viewEdit(){
+  let p={kind:"study",title:"",body:"",scripture:"",link_url:"",file_url:"",file_name:"",week_of:today(),pinned:false};
+  if(R.editId){const x=await api.getPost(R.editId);if(x)p=x}
+  return `<div class="stack"><button class="link" style="align-self:flex-start" data-act="back">${t("cancel")}</button>
+   <h1 class="big">${R.editId?t("editPost"):t("newPost").replace("+ ","")}</h1>
+   <form id="postForm" class="stack">
+    <label class="f">${t("type")}<select class="field" id="pKind">${["study","sermon","news"].map(k=>`<option value="${k}" ${p.kind===k?"selected":""}>${KIND(k)}</option>`).join("")}</select></label>
+    <label class="f">${t("title")}<input class="field" id="pTitle" maxlength="160" value="${esc(p.title)}" required></label>
+    <label class="f">${t("weekOf")}<input class="field" id="pWeek" type="date" value="${esc(p.week_of)}"></label>
+    <label class="f">${t("scripture")}<input class="field" id="pScripture" placeholder="${esc(t("scripturePh"))}" value="${esc(p.scripture)}"></label>
+    <label class="f">${t("message")}<textarea class="field" id="pBody" placeholder="${esc(t("messagePh"))}">${esc(p.body)}</textarea></label>
+    <label class="f">${t("link")}<input class="field" id="pLink" type="url" placeholder="https://" value="${esc(p.link_url)}"></label>
+    <label class="f">${t("file")}<input class="field" id="pFile" type="file" accept="audio/*,application/pdf,image/*"></label>
+    ${p.file_url?`<div class="small muted">${t("currentFile")} ${esc(p.file_name||t("attachmentWord"))} <label><input type="checkbox" id="pRemoveFile"> ${t("remove")}</label></div>`:""}
+    <label class="row small"><input type="checkbox" id="pPinned" ${p.pinned?"checked":""}> ${t("pinTop")}</label>
+    <div id="postErr"></div>
+    <button class="btn primary" type="submit">${R.editId?t("saveChanges"):t("publish")}</button>
+   </form></div>`;
+}
+async function submitPost(e){
+  e.preventDefault();const b=e.target.querySelector("button[type=submit]");b.disabled=true;const err=$("#postErr");err.innerHTML="";
+  try{
+    const d={kind:$("#pKind").value,title:$("#pTitle").value.trim(),week_of:$("#pWeek").value||today(),scripture:$("#pScripture").value.trim(),body:$("#pBody").value.trim(),link_url:$("#pLink").value.trim(),pinned:$("#pPinned").checked};
+    if(!d.title)throw new Error(t("needTitle"));
+    if(d.link_url&&!/^https?:\/\//.test(d.link_url))d.link_url="https://"+d.link_url;
+    const f=$("#pFile").files[0];
+    if(f){if(f.size>50*1024*1024)throw new Error(t("tooBig"));b.textContent=t("uploading");const u=await api.upload(f);d.file_url=u.url;d.file_name=u.name}
+    else if($("#pRemoveFile")&&$("#pRemoveFile").checked){d.file_url="";d.file_name=""}
+    const saved=await api.savePost(R.editId,d);toast(R.editId?t("saved"):t("published"));
+    await loadFeed(true);go({tab:"feed",view:"post",postId:saved.id,editId:null});
+  }catch(x){err.innerHTML=`<div class="err">${esc(friendly(x))}</div>`;b.disabled=false;b.textContent=R.editId?t("saveChanges"):t("publish")}
+}
+
+/* ================= VIEWS: prayer ================= */
+async function loadPrayers(reset){if(reset){prayPage=0;prayItems=[]}const it=await api.listPrayers(R.answered,prayPage);prayItems=prayItems.concat(it);prayMore=it.length===PAGE;prayPage++}
+function viewPrayer(){
+  const me=api.myId(),admin=ME.role==="admin";
+  return `<div class="stack">
+   <div><div class="eyebrow">${t("prayEyebrow")}</div><h1 class="big">${t("prayTitle")}</h1></div>
+   <details class="panel" id="newPrayer"><summary style="cursor:pointer;font-weight:600;color:var(--accent)">${t("sharePrayer")}</summary>
+    <form id="prayerForm" class="stack" style="margin-top:12px">
+     <label class="f">${t("request")}<input class="field" id="prTitle" maxlength="200" placeholder="${esc(t("requestPh"))}" required></label>
+     <label class="f">${t("details")}<textarea class="field" id="prBody" maxlength="3000" style="min-height:90px"></textarea></label>
+     <label class="f">${t("whoSees")}<select class="field" id="prVis"><option value="all">${t("visAll")}</option><option value="leaders">${t("visLeaders")}</option></select></label>
+     <div id="prErr"></div><button class="btn primary" style="align-self:flex-start" type="submit">${t("shareRequest")}</button></form></details>
+   <div class="row"><button class="chip ${!R.answered?"on":""}" data-answered="0">${t("current")}</button><button class="chip ${R.answered?"on":""}" data-answered="1">${t("answered")}</button></div>
+   ${prayItems.map(p=>{const sup=(p.prayer_support||[]);const mine=sup.some(s=>s.user_id===me);const own=p.author_id===me;
+     return `<article class="panel prayer"><div class="row">${p.visibility==="leaders"?`<span class="tag leaders">${t("leadersOnly")}</span>`:""}${p.answered?`<span class="tag answered">${t("answered")}</span>`:""}<span class="small muted">${esc(p.profiles&&p.profiles.full_name||t("member"))} · ${esc(ago(p.created_at))}</span></div>
+      <h3 class="serif" style="font-size:1.1rem;font-weight:600">${esc(p.title)}</h3>${p.body?`<div class="body" style="font-size:.98rem">${paras(p.body)}</div>`:""}
+      <div class="row between"><button class="btn ${mine?"on":""}" data-pray="${p.id}" data-on="${mine?1:0}">🙏 ${mine?t("praying"):t("imPraying")}${sup.length?" · "+sup.length:""}</button>
+       ${own||admin?`<span class="row small">${own&&!p.answered?`<button class="link" data-answer="${p.id}">${t("markAnswered")}</button>`:""}<button class="link danger" data-delprayer="${p.id}">${t("del")}</button></span>`:""}</div></article>`}).join("")||`<div class="panel"><p class="serif">${R.answered?t("noAnswered"):t("noPrayers")}</p></div>`}
+   ${prayMore?`<button class="btn" data-act="morepray">${t("showMore")}</button>`:""}</div>`;
+}
+
+/* ================= VIEWS: admin ================= */
+async function viewAdmin(){
+  if(ME.role!=="admin")return `<div class="panel">${t("adminOnly")}</div>`;
+  const ms=await api.listMembers();const me=api.myId();
+  const pending=ms.filter(m=>m.status==="pending"),approved=ms.filter(m=>m.status==="approved"),blocked=ms.filter(m=>m.status==="blocked");
+  const row=m=>`<div class="member"><div style="min-width:0"><div style="font-weight:600">${esc(m.full_name||t("noName"))}${m.role==="admin"?` <span class="tag pin">${t("tabAdmin")}</span>`:""}${m.id===me?` <span class="small muted">${t("you")}</span>`:""}</div><div class="small muted">${t("joined")} ${esc(fmtDate(m.created_at))}</div></div>
+   <div class="row" style="justify-content:flex-end">${m.status==="pending"?`<button class="btn primary" data-mem="${m.id}" data-set='{"status":"approved"}'>${t("approve")}</button><button class="btn danger" data-memdel="${m.id}">${t("decline")}</button>`:
+     m.id===me?"":m.status==="approved"?`${m.role==="admin"?`<button class="btn" data-mem="${m.id}" data-set='{"role":"member"}'>${t("removeAdmin")}</button>`:`<button class="btn" data-mem="${m.id}" data-set='{"role":"admin"}'>${t("makeAdmin")}</button>`}<button class="btn danger" data-mem="${m.id}" data-set='{"status":"blocked","role":"member"}'>${t("block")}</button>`:
+     `<button class="btn" data-mem="${m.id}" data-set='{"status":"approved"}'>${t("restore")}</button>`}</div></div>`;
+  return `<div class="stack"><div><div class="eyebrow">${t("adminEyebrow")}</div><h1 class="big">${t("adminTitle")}</h1></div>
+   <div class="row"><button class="btn primary" data-act="newpost">${t("newWeekly")}</button></div>
+   <section class="panel"><div class="eyebrow" style="margin-bottom:4px">${t("waiting")} (${pending.length})</div>${pending.map(row).join("")||`<p class="small muted">${t("noneWaiting")}</p>`}</section>
+   <section class="panel"><div class="eyebrow" style="margin-bottom:4px">${t("members")} (${approved.length})</div>${approved.map(row).join("")}</section>
+   ${blocked.length?`<section class="panel"><div class="eyebrow" style="margin-bottom:4px">${t("blocked")} (${blocked.length})</div>${blocked.map(row).join("")}</section>`:""}
+   <p class="small muted">${t("adminNote")}</p></div>`;
+}
+function contactBlock(){
+  const rows=[];
+  const tel=n=>"tel:"+String(n).replace(/[^\d+]/g,"").replace(/^0/,"+27");
+  if(CFG.phone)rows.push(`<div>📞 ${t("office")}: <a href="${tel(CFG.phone)}">${esc(CFG.phone)}</a></div>`);
+  if(CFG.pastor&&CFG.pastor.phone)rows.push(`<div>👤 ${esc(CFG.pastor.name||t("pastorL"))}: <a href="${tel(CFG.pastor.phone)}">${esc(CFG.pastor.phone)}</a></div>`);
+  if(CFG.email)rows.push(`<div>✉️ <a href="mailto:${esc(CFG.email)}">${esc(CFG.email)}</a></div>`);
+  if(CFG.address)rows.push(`<div>📍 ${esc(CFG.address)}${CFG.mapsQuery?` · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CFG.mapsQuery)}" target="_blank" rel="noopener">${t("directions")}</a>`:""}</div>`);
+  if(CFG.facebook)rows.push(`<div>📘 <a href="${esc(CFG.facebook)}" target="_blank" rel="noopener">${t("facebookL")}</a></div>`);
+  if(CFG.youtube)rows.push(`<div>▶️ <a href="${esc(CFG.youtube)}" target="_blank" rel="noopener">${t("youtubeL")}</a></div>`);
+  if(CFG.website)rows.push(`<div>🌐 <a href="${esc(CFG.website)}" target="_blank" rel="noopener">${esc(CFG.website.replace(/^https?:\/\//,""))}</a></div>`);
+  if(!rows.length)return "";
+  return `<section class="panel stack contact"><div class="row" style="gap:12px">${logoBig()}<div><div class="eyebrow">${t("visitUs")}</div><div style="font-weight:600">${esc(CFG.churchName)}</div>${CFG.tagline&&CFG.tagline[LANG]?`<div class="tagline small">${esc(CFG.tagline[LANG])}</div>`:""}</div></div><div class="small stack" style="gap:6px">${rows.join("")}</div></section>`;
+}
+function viewMe(){
+  const contact=[CFG.address&&`<div>📍 ${esc(CFG.address)}</div>`,CFG.phone&&`<div>📞 <a href="tel:${esc(CFG.phone.replace(/\s/g,""))}">${esc(CFG.phone)}</a></div>`,CFG.email&&`<div>✉️ <a href="mailto:${esc(CFG.email)}">${esc(CFG.email)}</a></div>`,CFG.website&&`<div>🌐 <a href="${esc(CFG.website)}" target="_blank" rel="noopener">${esc(CFG.website.replace(/^https?:\/\//,""))}</a></div>`].filter(Boolean).join("");
+  return `<div class="stack"><div><div class="eyebrow">${t("myAccount")}</div><h1 class="big">${esc(ME.full_name||t("tabMe"))}</h1></div>
+   <section class="panel stack"><div class="small muted">${ME.role==="admin"?t("roleAdmin"):t("roleMember")} ${t("of")} ${esc(CFG.churchName)}</div>
+    <div class="row"><button class="btn" data-act="changepw">${t("changePw")}</button><button class="btn" data-act="signout">${t("signOut")}</button></div></section>
+   <section class="panel stack"><div class="eyebrow">${t("language")}</div><div class="row"><button class="chip ${LANG==="af"?"on":""}" data-lang="af">Afrikaans</button><button class="chip ${LANG==="en"?"on":""}" data-lang="en">English</button></div></section>
+   ${contactBlock()}
+   <section class="panel stack"><div class="eyebrow">${t("textSize")}</div><div class="sizes">${[["0","sizeN"],["1","sizeL"],["2","sizeXL"]].map(([v,k])=>`<button class="chip ${TEXTSIZE===v?"on":""}" data-size="${v}">${t(k)}</button>`).join("")}</div></section>
+   <section class="panel stack"><div class="eyebrow">${t("installMeTitle")}</div>${STANDALONE()?`<p class="small">${t("installed")}</p>`:`<button class="btn primary" style="align-self:flex-start" data-act="howinstall">${t("onPhoneShort")}</button>`}</section>
+   <section class="panel stack"><div class="eyebrow">${t("commitment")}</div><p class="small muted">${t("commitmentText")}</p></section></div>`;
+}
+
+/* ================= RENDER ================= */
+let seq=0;
+async function render(){
+  const s=++seq;const v=$("#view");applyStatic();
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===R.tab?"true":"false"));
+  if(R.install){v.innerHTML=viewInstall();return}
+  if(!ME||ME.status!=="approved"){if(R.screen&&R.screen.type==="pending")v.innerHTML=viewPending();else if(R.screen&&R.screen.type==="auth")v.innerHTML=viewAuth(R.screen.msg,R.screen.isErr);return}
+  let h;
+  try{
+    if(R.tab==="feed")h=R.view==="post"?await viewPost():R.view==="edit"?await viewEdit():viewFeed();
+    else if(R.tab==="prayer")h=viewPrayer();
+    else if(R.tab==="admin")h=R.view==="edit"?await viewEdit():await viewAdmin();
+    else h=viewMe();
+  }catch(e){h=`<div class="err">${esc(friendly(e))}</div><button class="btn" style="margin-top:10px" data-act="retry">${t("tryAgain")}</button>`}
+  if(s!==seq)return;v.innerHTML=h;
+}
+async function refreshBadge(){if(ME&&ME.role==="admin"){try{const n=await api.pendingCount();$("#pendingBadge").innerHTML=n?`<span class="badge">${n}</span>`:""}catch(e){}}}
+
+async function boot(){
+  $("#brand").textContent=(CFG.appName||"AGS Jubelate").toUpperCase();document.title=CFG.appName||"AGS Jubelate";
+  setupLogo();applyStatic();
+  if(R.recovery){$("#tabs").hidden=true;R.auth="newpw";$("#view").innerHTML=viewAuth();return}
+  const sess=await api.session();
+  if(!sess){ME=null;$("#tabs").hidden=true;$("#view").innerHTML=viewAuth();return}
+  try{ME=await api.me()}catch(e){ME=null}
+  if(!ME||ME.status!=="approved"){$("#tabs").hidden=true;$("#view").innerHTML=viewPending();return}
+  R.screen=null;$("#tabs").hidden=false;$("#adminTab").hidden=ME.role!=="admin";
+  try{await Promise.all([loadFeed(true),loadPrayers(true)])}catch(e){}
+  refreshBadge();render();
+}
+
+/* ================= EVENTS ================= */
+document.addEventListener("click",async e=>{
+  const el=e.target.closest("button,[data-post]");if(!el)return;const ds=el.dataset;
+  try{
+    if(ds.lang){LANG=ds.lang;try{localStorage.setItem("jubelate-lang",LANG)}catch(x){}render();return}
+    if(ds.auth){R.auth=ds.auth;$("#view").innerHTML=viewAuth();return}
+    if(ds.tab){if(ds.tab==="prayer")await loadPrayers(true);if(ds.tab==="feed"&&R.tab==="feed"){await loadFeed(true)}go({tab:ds.tab,view:"list"});if(ds.tab==="admin")refreshBadge();return}
+    if(ds.kind){R.kind=ds.kind;await loadFeed(true);render();return}
+    if(ds.post){go({tab:"feed",view:"post",postId:+ds.post});return}
+    if(ds.edit){go({view:"edit",editId:+ds.edit});return}
+    if(ds.delpost){if(el.dataset.sure){await api.deletePost(+ds.delpost);toast(t("postDeleted"));await loadFeed(true);go({tab:"feed",view:"list"})}else{el.dataset.sure=1;el.textContent=t("tapAgainDel")}return}
+    if(ds.delcomment){await api.deleteComment(+ds.delcomment);render();return}
+    if(ds.answered!==undefined){R.answered=ds.answered==="1";await loadPrayers(true);render();return}
+    if(ds.pray){el.disabled=true;await api.pray(+ds.pray,ds.on!=="1");await loadPrayers(true);render();return}
+    if(ds.answer){await api.updatePrayer(+ds.answer,{answered:true});toast(t("praiseGod"));await loadPrayers(true);render();return}
+    if(ds.delprayer){if(el.dataset.sure){await api.deletePrayer(+ds.delprayer);await loadPrayers(true);render()}else{el.dataset.sure=1;el.textContent=t("tapAgainDel")}return}
+    if(ds.mem){el.disabled=true;await api.updateMember(ds.mem,JSON.parse(ds.set));toast(t("updated"));refreshBadge();render();return}
+    if(ds.memdel){if(el.dataset.sure){await api.removeMember(ds.memdel);toast(t("declined"));refreshBadge();render()}else{el.dataset.sure=1;el.textContent=t("tapAgain")}return}
+    if(ds.size!==undefined){TEXTSIZE=ds.size;try{localStorage.setItem("jubelate-size",TEXTSIZE)}catch(x){}applySize();render();return}
+    const a=ds.act;if(!a)return;
+    if(a==="install"){if(deferredPrompt){deferredPrompt.prompt();const r=await deferredPrompt.userChoice;deferredPrompt=null;if(r&&r.outcome==="accepted")toast(t("installDone"));render()}else{R.install=true;render();window.scrollTo(0,0)}return}
+    if(a==="howinstall"){R.install=true;render();window.scrollTo(0,0);return}
+    if(a==="closeinstall"){R.install=false;render();return}
+    if(a==="installlater"){try{localStorage.setItem("jubelate-install-later",new Date().toDateString())}catch(x){}render();return}
+    if(a==="copylink"){const u=location.href.split("#")[0];try{await navigator.clipboard.writeText(u);toast(t("copied"))}catch(x){prompt("",u)}return}
+    if(a==="togglepw"){const f=$("#aPw");if(f){const show=f.type==="password";f.type=show?"text":"password";el.textContent=show?t("hide"):t("show")}return}
+    if(a==="back"){go({view:R.view==="edit"&&R.editId?"post":"list",postId:R.editId||R.postId,editId:null});return}
+    if(a==="newpost"){go({view:"edit",editId:null});return}
+    if(a==="morefeed"){await loadFeed(false);render();return}
+    if(a==="morepray"){await loadPrayers(false);render();return}
+    if(a==="signout"){if(api.demo){toast(t("demoSignout"));return}await api.signOut();ME=null;boot();return}
+    if(a==="recheck"){boot();return}
+    if(a==="retry"){render();return}
+    if(a==="changepw"){R.recovery=true;boot();return}
+  }catch(err){toast(friendly(err))}
+});
+document.addEventListener("submit",async e=>{
+  if(e.target.id==="authForm")return submitAuth(e);
+  if(e.target.id==="postForm")return submitPost(e);
+  e.preventDefault();
+  try{
+    if(e.target.id==="commentForm"){const b=$("#cBody").value.trim();if(!b)return;e.target.querySelector("button").disabled=true;await api.addComment(R.postId,b);await loadFeed(true);render()}
+    if(e.target.id==="prayerForm"){const title=$("#prTitle").value.trim();if(!title){$("#prErr").innerHTML=`<div class="err">${t("needRequest")}</div>`;return}
+      await api.addPrayer({title,body:$("#prBody").value.trim(),visibility:$("#prVis").value});toast(t("prayerShared"));R.answered=false;await loadPrayers(true);render()}
+  }catch(err){toast(friendly(err))}
+});
+
+if(!DEMO)api.onAuth(ev=>{if(ev==="PASSWORD_RECOVERY"){R.recovery=true;boot()}});
+if("serviceWorker" in navigator&&location.protocol==="https:")window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+boot();
+</script>
+</body>
+</html>
